@@ -1,0 +1,32 @@
+{
+  "name": "pwa-notifications",
+  "version": "1.0.0",
+  "description": "Framework-agnostic PWA and Push Notifications library",
+  "main": "dist/server.js",
+  "module": "dist/server.mjs",
+  "types": "dist/server.d.ts",
+  "exports": {
+    ".": "./dist/server.js",
+    "./client": "./dist/client.js",
+    "./server": "./dist/server.js"
+  },
+  "scripts": {
+    "build": "tsup",
+    "postinstall": "node scripts/postinstall.js"
+  },
+  "dependencies": {
+    "web-push": "^3.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/web-push": "^3.6.3",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "pwa",
+    "push-notifications"
+  ],
+  "author": "",
+  "license": "ISC"
+}
