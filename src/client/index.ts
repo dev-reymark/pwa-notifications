@@ -89,9 +89,13 @@ export async function unsubscribeFromPush(): Promise<boolean> {
 let deferredPrompt: any = null;
 
 if (typeof window !== "undefined") {
+  if ((window as any).deferredPrompt) {
+    deferredPrompt = (window as any).deferredPrompt;
+  }
   window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
     deferredPrompt = e;
+    (window as any).deferredPrompt = e;
   });
 }
 
@@ -104,15 +108,24 @@ export function isPWAInstalled(): boolean {
 }
 
 export function canInstallPWA(): boolean {
+  if (typeof window !== "undefined" && (window as any).deferredPrompt) {
+    deferredPrompt = (window as any).deferredPrompt;
+  }
   return !!deferredPrompt;
 }
 
 export async function promptPWAInstall(): Promise<boolean> {
+  if (typeof window !== "undefined" && (window as any).deferredPrompt) {
+    deferredPrompt = (window as any).deferredPrompt;
+  }
   if (!deferredPrompt) return false;
 
   deferredPrompt.prompt();
   const { outcome } = await deferredPrompt.userChoice;
   deferredPrompt = null;
+  if (typeof window !== "undefined") {
+    (window as any).deferredPrompt = null;
+  }
   return outcome === "accepted";
 }
 
@@ -122,11 +135,15 @@ export function onPWAInstallable(callback: (canInstall: boolean) => void): () =>
   const handleBeforeInstallPrompt = (e: any) => {
     e.preventDefault();
     deferredPrompt = e;
+    (window as any).deferredPrompt = e;
     callback(true);
   };
 
   const handleAppInstalled = () => {
     deferredPrompt = null;
+    if (typeof window !== "undefined") {
+      (window as any).deferredPrompt = null;
+    }
     callback(false);
   };
 

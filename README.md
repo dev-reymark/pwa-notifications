@@ -167,5 +167,91 @@ await sendPushNotification(subscription, {
 - HTTPS (or localhost for development)
 - Node.js environment for sending notifications
 
+---
+
+## Real-Time Hybrid Notification Pattern (Architecture Guide)
+
+For complex applications (like marketplaces or dashboard systems), developers often need **real-time UI updates** combined with **OS-level PWA background push notifications**.
+
+A generic, highly efficient architecture is the **Hybrid Database/Real-Time Sync Pattern**:
+
+### 1. The Architecture Flow
+1. **Neon/Postgres/MySQL DB**: The source of truth. All user notifications are persisted relationally.
+2. **Firestore (or any socket/SSE/Supabase Realtime Channel)**: A lightweight websocket trigger. Instead of keeping database sockets open, a simple counter (e.g. `notificationTrigger`) is incremented when a notification is created.
+3. **`pwa-notifications`**: Registers the service worker and registers the subscriber endpoint for OS-level background notifications.
+
+### 2. Implementation Example
+
+#### Client-Side Hook (React / Vue)
+Subscribe to the real-time trigger (like Firestore or Supabase) to instantly refresh your SQL database notification records on the UI:
+
+```typescript
+import { useEffect, useState } from "react";
+import { registerServiceWorker, subscribeToPush } from "pwa-notifications/client";
+import { onSnapshot, doc } from "firebase/firestore"; // Or your preferred websocket listener
+
+export function useNotifications(userId: string) {
+  const [notifications, setNotifications] = useState([]);
+
+  const fetchFromDB = async () => {
+    const res = await fetch(`/api/notifications?userId=${userId}`);
+    const data = await res.json();
+    setNotifications(data);
+  };
+
+  useEffect(() => {
+    // 1. Register PWA Service Worker
+    registerServiceWorker("/sw.js");
+
+    // 2. Real-time trigger: refresh UI list when counter updates
+    const unsubscribe = onSnapshot(doc(db, "users", userId), () => {
+      fetchFromDB();
+    });
+
+    return () => unsubscribe();
+  }, [userId]);
+
+  return { notifications };
+}
+```
+
+#### Server-Side Dispatcher
+When sending a notification, write to your database, update the real-time websocket trigger, and send the background push payload:
+
+```typescript
+import { sendPushNotification } from "pwa-notifications/server";
+import { db } from "@/db"; // Your Drizzle or Prisma client
+
+export async function notifyUser(userId: string, alert: { title: string; body: string }) {
+  // 1. Persist to Postgres/SQL DB
+  const [notification] = await db.insert(notifications).values({
+    userId,
+    title: alert.title,
+    message: alert.body,
+    read: false
+  }).returning();
+
+  // 2. Update real-time websocket/Firestore counter to refresh recipient's active UI
+  await firestore.collection("users").doc(userId).update({
+    notificationTrigger: increment(1)
+  });
+
+  // 3. Dispatch OS-level background push notification via pwa-notifications
+  const subscription = await getPushSubscriptionFromDB(userId);
+  if (subscription) {
+    await sendPushNotification(subscription, {
+      title: alert.title,
+      body: alert.body,
+      icon: "/icon-192x192.svg",
+      url: `/alerts/${notification.id}`
+    }, {
+      vapidPublicKey: process.env.VAPID_PUBLIC_KEY,
+      vapidPrivateKey: process.env.VAPID_PRIVATE_KEY
+    });
+  }
+}
+```
+
+
 ## Contributing
 Contributions to the auto-injection script to support automatic component generation for Vue and Vite are welcome!
