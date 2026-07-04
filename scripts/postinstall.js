@@ -600,9 +600,15 @@ export default function InstallSection({ appName: propAppName }: InstallSectionP
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
     observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
 
+    const handleAppInstalled = () => {
+      setIsInstalled(true);
+    };
+    window.addEventListener('appinstalled', handleAppInstalled);
+
     return () => {
       cleanup();
       observer.disconnect();
+      window.removeEventListener('appinstalled', handleAppInstalled);
     };
   }, [propAppName]);
 
@@ -653,11 +659,13 @@ export default function InstallSection({ appName: propAppName }: InstallSectionP
   // null = not yet checked (SSR / before useEffect). Render nothing until we know.
   if (isInstalled === null) return devOverlay;
 
-  if (isDismissed || (!isInstalled && !canInstall && !isIOS && !isAndroid)) {
+  const shouldShowManager = isInstalled || (!canInstall && !isIOS && !isAndroid);
+
+  if (isDismissed) {
     return devOverlay;
   }
 
-  if (isInstalled) {
+  if (shouldShowManager) {
     return (
       <>
         <section style={{ backgroundColor: isDark ? '#0f172a' : '#f3f4f6', padding: '2rem 1.5rem', fontFamily: 'sans-serif', display: 'flex', justifyContent: 'center' }}>
@@ -681,9 +689,6 @@ export default function InstallSection({ appName: propAppName }: InstallSectionP
       <div style={{ maxWidth: '64rem', margin: '0 auto', display: 'grid', gap: '3rem', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', alignItems: 'center' }}>
         
         <div>
-          <span style={{ display: 'inline-block', padding: '0.25rem 0.75rem', backgroundColor: isDark ? '#0f172a' : '#e0f2fe', color: isDark ? '#38bdf8' : '#0284c7', fontSize: '0.75rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '9999px', marginBottom: '1rem', border: isDark ? '1px solid #1e293b' : 'none' }}>
-            Add to Home Screen
-          </span>
           <h2 style={{ fontSize: '2.5rem', fontWeight: 'bold', color: isDark ? '#f8fafc' : '#111827', margin: '0 0 1rem 0', lineHeight: 1.2 }}>
             Add {appName} <span style={{ color: isDark ? '#4b5563' : '#9ca3af', display: 'block' }}>to your home screen.</span>
           </h2>
@@ -778,7 +783,6 @@ export default function InstallSection({ appName: propAppName }: InstallSectionP
                 <div style={{ minWidth: 0, flex: 1 }}>
                   <p style={{ margin: 0, fontSize: '0.875rem', fontWeight: '700', color: isDark ? '#f8fafc' : '#0f172a', lineHeight: 1.2, display: 'flex', alignItems: 'center', gap: '2px' }}>
                     {appName}
-                    <span style={{ display: 'inline-block', height: '4px', width: '4px', borderRadius: '9999px', backgroundColor: '#006fee' }} />
                   </p>
                   <p style={{ margin: 0, fontSize: '0.75rem', color: isDark ? '#94a3b8' : '#6b7280', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{appDescription}</p>
                 </div>

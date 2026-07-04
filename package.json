@@ -39,6 +39,10 @@
     "pwa",
     "push-notifications"
   ],
-  "author": "",
-  "license": "ISC"
+  "homepage": "https://github.com/dev-reymark/pwa-notifications",
+  "license": "MIT",
+  "author": {
+    "name": "Rey Mark Tapar",
+    "role": "Developer"
+  }
 }
