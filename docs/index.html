@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PWA Notifications — Premium React & Next.js Integration</title>
+  
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;circle cx='50' cy='50' r='50' fill='%230f172a'/&gt;&lt;text x='50' y='63' font-family='sans-serif' font-weight='bold' font-size='48' fill='%23ffffff' text-anchor='middle'&gt;p&lt;/text&gt;&lt;/svg&gt;">
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Add sleek PWA install prompts and push notification management to your Next.js and React applications in under a minute.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.6s ease-out forwards',
+            'float': 'float 4s ease-in-out infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0', transform: 'translateY(12px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' }
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-6px)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  
+  <!-- Styling overrides -->
+  <style>
+    body {
+      background-color: #f7f7f6;
+    }
+    .code-scroll::-webkit-scrollbar {
+      height: 6px;
+    }
+    .code-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .code-scroll::-webkit-scrollbar-thumb {
+      background: #e4e4e7;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="font-sans text-zinc-900 selection:bg-sky-200/60 overflow-x-hidden">
+
+  <!-- Glow Background Effect -->
+  <div class="absolute inset-x-0 top-0 mx-auto h-[550px] max-w-7xl bg-[radial-gradient(circle_at_50%_0%,rgba(14,165,233,0.12),transparent_40%)] pointer-events-none z-0"></div>
+
+  <!-- Navigation Bar -->
+  <nav class="fixed inset-x-0 top-0 z-50 mx-auto flex h-16 max-w-5xl items-center justify-between px-6 backdrop-blur-xl border-b border-zinc-200/30">
+    <div class="flex items-center gap-2 font-bold tracking-tight text-zinc-950">
+      <span class="flex h-6 w-6 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-mono text-white">p</span>
+      pwa-notifications<span class="h-2 w-2 rounded-full bg-sky-500"></span>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="hidden items-center gap-6 text-xs font-semibold text-zinc-500 md:flex">
+        <a href="#installation" class="hover:text-zinc-950 transition">Installation</a>
+        <a href="#features" class="hover:text-zinc-950 transition">Features</a>
+        <a href="#advanced" class="hover:text-zinc-950 transition">Advanced</a>
+        <a href="#faqs" class="hover:text-zinc-950 transition">FAQs</a>
+      </div>
+      <a href="https://github.com/dev-reymark/pwa-notifications" target="_blank" class="inline-flex h-8 items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-3 text-xs font-semibold text-zinc-800 shadow-sm hover:bg-zinc-50 active:scale-[0.98] transition" title="GitHub Repository">
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+        </svg>
+        <span>GitHub</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden px-6 pb-16 pt-32 text-center z-10">
+    <div class="relative mx-auto max-w-3xl animate-fade-in">
+      
+      <!-- Announcement Pill -->
+      <span class="inline-flex items-center gap-1.5 rounded-full border border-zinc-200/80 bg-white/70 px-3 py-1 text-xs font-semibold text-zinc-600 shadow-sm backdrop-blur mb-6">
+        <span class="flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        v1.0.0 available
+      </span>
+
+      <!-- Headline -->
+      <h1 class="text-balance text-5xl font-extrabold tracking-[-0.05em] text-zinc-950 md:text-7xl leading-[1.1]">
+        Build PWA <br /> you're proud to ship
+      </h1>
+      
+      <p class="mx-auto mt-6 max-w-xl text-pretty text-sm leading-6 text-zinc-500">
+        100% free, zero-config PWA install panels and custom push notification manager widgets. Built with React and Typescript.
+      </p>
+
+      <!-- Action Buttons -->
+      <div class="mt-8 flex justify-center gap-3">
+        <a href="#installation" class="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-zinc-950 px-5 text-sm font-semibold text-white shadow-lg shadow-zinc-900/15 hover:bg-zinc-800 active:scale-[0.98] transition">
+          Get Started
+        </a>
+        <a href="#preview" class="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-zinc-200 bg-white px-5 text-sm font-semibold text-zinc-800 shadow-sm hover:bg-zinc-50 active:scale-[0.98] transition">
+          Live Mockup
+        </a>
+      </div>
+    </div>
+
+    <!-- Live Preview Mockup Interface -->
+    <div id="preview" class="relative mx-auto mt-16 h-[560px] max-w-4xl">
+      <!-- Background shadows -->
+      <div class="absolute inset-x-0 top-16 h-64 rounded-[3rem] bg-gradient-to-b from-zinc-200/60 to-transparent blur-3xl -z-10"></div>
+
+      <!-- iPhone Left Card - Settings Trigger Mock -->
+      <div class="absolute left-6 top-36 z-10 w-60 rotate-[-1deg] overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-[0_24px_80px_rgba(24,24,27,0.08)] hidden md:block">
+        <div class="flex h-9 items-center gap-1 border-b border-zinc-100 bg-zinc-50/80 px-4">
+          <span class="h-2 w-2 rounded-full bg-zinc-300"></span>
+          <span class="h-2 w-2 rounded-full bg-zinc-300"></span>
+          <span class="h-2 w-2 rounded-full bg-zinc-300"></span>
+        </div>
+        <div class="p-4 text-left">
+          <div class="flex items-center justify-between text-[10px] text-zinc-400 mb-2">
+            <span>Mock Control</span><i data-lucide="settings-2" class="h-3 w-3"></i>
+          </div>
+          <div class="p-3 bg-zinc-50 rounded-xl border border-zinc-100 mb-3">
+            <h4 class="text-xs font-bold text-zinc-800 mb-1">Interactive Test</h4>
+            <p class="text-[10px] text-zinc-400">Click the buttons in the phone mock to simulate installation and notification popups.</p>
+          </div>
+          <div class="flex flex-col gap-2">
+            <button onclick="simulateInstallPrompt()" class="w-full text-center py-2 rounded-lg bg-zinc-950 hover:bg-zinc-800 text-white text-[11px] font-semibold transition active:scale-[0.98]">
+              Simulate Browser Prompt
+            </button>
+            <button onclick="simulateOfflineMode(this)" class="w-full text-center py-2 rounded-lg border border-red-200 bg-red-50 hover:bg-red-100 text-red-600 text-[11px] font-semibold transition active:scale-[0.98]">
+              Simulate Offline Status
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center Premium Phone Mockup Container -->
+      <div class="absolute left-1/2 top-0 z-30 w-72 -translate-x-1/2 md:w-80 overflow-hidden rounded-[2.8rem] border border-zinc-200/80 bg-white shadow-[0_24px_80px_rgba(24,24,27,0.08)]">
+        <!-- Browser top bar -->
+        <div class="flex h-9 items-center gap-1 border-b border-zinc-100 bg-zinc-50/80 px-4">
+          <span class="h-2 w-2 rounded-full bg-zinc-300"></span>
+          <span class="h-2 w-2 rounded-full bg-zinc-300"></span>
+          <span class="h-2 w-2 rounded-full bg-zinc-300"></span>
+        </div>
+        <!-- Mock App Area -->
+        <div class="p-5 text-left bg-zinc-50/50 min-h-[460px] flex flex-col justify-between relative">
+          
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-[10px] font-bold text-zinc-400 tracking-wide uppercase">Settings</span>
+            </div>
+            
+            <div class="p-4 bg-white rounded-2xl border border-zinc-200/60 shadow-sm mb-4">
+              <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded-xl bg-zinc-950 flex items-center justify-center text-white font-mono font-bold text-lg select-none">
+                  P
+                </div>
+                <div>
+                  <h3 class="text-sm font-bold text-zinc-800">pwa-notifications</h3>
+                  <p class="text-[10px] text-zinc-400">Active Workspace</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <div class="p-3 bg-white rounded-xl border border-zinc-200/50 flex justify-between items-center shadow-sm">
+                <div class="flex flex-col">
+                  <span class="text-[11px] font-semibold text-zinc-800">Push Notifications</span>
+                  <span class="text-[9px] text-zinc-400 mt-0.5">Toggle real-time alerts</span>
+                </div>
+                <button onclick="toggleMockSubscription(this)" class="w-10 h-6 bg-sky-600 rounded-full p-0.5 transition duration-200 ease-in-out relative focus:outline-none">
+                  <span class="block w-5 h-5 bg-white rounded-full shadow transform translate-x-4 transition duration-200 ease-in-out"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Injected Install Section Mockup inside Phone -->
+          <div class="border border-zinc-200/80 bg-white p-4 rounded-2xl shadow-lg mt-6">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="h-6 w-6 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center"><i data-lucide="monitor" class="h-3.5 w-3.5"></i></div>
+              <div>
+                <h4 class="text-xs font-bold text-zinc-900">Install on Your Device</h4>
+                <p class="text-[9px] text-zinc-400">Add to your home screen for fast access.</p>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="simulateInstallPrompt()" class="flex-1 py-1.5 rounded-lg bg-zinc-900 text-white text-[11px] font-bold hover:bg-zinc-800 transition">Install</button>
+              <button onclick="toggleMockModal(true)" class="flex-1 py-1.5 rounded-lg border border-zinc-200 text-zinc-700 text-[11px] font-bold hover:bg-zinc-50 transition">Settings</button>
+            </div>
+          </div>
+
+          <!-- Mock Dialog Alert (InstallPrompt style) -->
+          <div id="mockInstallPrompt" class="absolute inset-0 bg-black/40 backdrop-blur-sm z-40 hidden flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl p-4 w-full border border-zinc-100 shadow-xl">
+              <div class="flex items-start gap-3 mb-3">
+                <div class="p-2 bg-sky-100 text-sky-600 rounded-xl"><i data-lucide="download" class="h-4 w-4"></i></div>
+                <div>
+                  <h4 class="text-sm font-bold text-zinc-900">Add to Home Screen</h4>
+                  <p class="text-[11px] text-zinc-500">Install our app on your device for easy access.</p>
+                </div>
+              </div>
+              <div class="flex gap-2">
+                <button onclick="simulateInstallSuccess()" class="flex-1 py-2 bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold rounded-xl shadow-md transition">Add Client</button>
+                <button onclick="closeInstallPrompt()" class="flex-1 py-2 border border-zinc-200 text-zinc-600 text-xs font-semibold rounded-xl hover:bg-zinc-50 transition">Cancel</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mock Notification Settings Modal -->
+          <div id="mockSettingsModal" class="absolute inset-0 bg-black/40 backdrop-blur-sm z-40 hidden flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl p-4 w-full border border-zinc-100 shadow-xl text-left">
+              <h4 class="text-sm font-bold text-zinc-900 mb-3">Notification Settings</h4>
+              
+              <!-- Switch Switcher Toggle -->
+              <div class="flex items-center justify-between p-3 rounded-xl bg-zinc-50 border border-zinc-100 mb-4">
+                <div>
+                  <p class="text-xs font-semibold text-zinc-800">Push Notifications</p>
+                  <p class="text-[10px] text-zinc-400">Toggle alerts for match updates</p>
+                </div>
+                <button onclick="toggleMockSubscription(this)" class="w-10 h-6 bg-zinc-300 rounded-full p-0.5 transition duration-200 ease-in-out relative focus:outline-none">
+                  <span class="block w-5 h-5 bg-white rounded-full shadow transform translate-x-0 transition duration-200 ease-in-out"></span>
+                </button>
+              </div>
+
+              <div class="flex justify-end">
+                <button onclick="toggleMockModal(false)" class="px-4 py-1.5 bg-zinc-900 text-white text-xs font-semibold rounded-lg hover:bg-zinc-800 transition">Close</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Toast Notification Widget -->
+          <div id="mockToast" class="absolute top-4 inset-x-4 p-3 bg-zinc-900 border border-zinc-800 text-white text-xs font-medium rounded-xl flex items-center gap-2 shadow-2xl z-50 transform -translate-y-16 opacity-0 transition duration-300">
+            <i data-lucide="check-circle" class="h-4 w-4 text-emerald-400"></i>
+            <span id="toastText">Subscribed successfully!</span>
+          </div>
+
+          <!-- Mock Offline Alert -->
+          <div id="mockOfflineAlert" class="absolute bottom-6 right-4 left-4 z-50 transition-all duration-500 ease-out translate-y-10 opacity-0 pointer-events-none">
+            <div class="flex items-start gap-3 rounded-xl p-4 shadow-2xl border w-full transition-colors bg-red-50 border-red-200 text-red-800">
+              <div class="mt-0.5 shrink-0">
+                <i data-lucide="wifi-off" class="h-4 w-4 text-red-500"></i>
+              </div>
+              <div class="flex-1 text-left">
+                <h3 class="text-xs font-bold">You are offline</h3>
+                <div class="mt-1 text-[10px] opacity-90 leading-relaxed text-pretty">
+                  Please check your internet connection.
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Right Card - VAPID Configuration Mock -->
+      <div class="absolute right-6 top-32 z-10 w-56 rotate-[1deg] overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-[0_24px_80px_rgba(24,24,27,0.08)] hidden md:block">
+        <div class="flex h-9 items-center gap-1 border-b border-zinc-100 bg-zinc-50/80 px-4">
+          <span class="h-2 w-2 rounded-full bg-zinc-300"></span>
+          <span class="h-2 w-2 rounded-full bg-zinc-300"></span>
+          <span class="h-2 w-2 rounded-full bg-zinc-300"></span>
+        </div>
+        <div class="p-4 text-left">
+          <h4 class="text-xs font-semibold text-zinc-800 mb-3">Core Features</h4>
+          <div class="space-y-2">
+            <div class="flex items-center gap-2 text-[11px] text-zinc-600">
+              <span class="h-1.5 w-1.5 rounded-full bg-sky-500"></span> Custom Alert Dialogs
+            </div>
+            <div class="flex items-center gap-2 text-[11px] text-zinc-600">
+              <span class="h-1.5 w-1.5 rounded-full bg-sky-500"></span> Switch Subscription Controls
+            </div>
+            <div class="flex items-center gap-2 text-[11px] text-zinc-600">
+              <span class="h-1.5 w-1.5 rounded-full bg-sky-500"></span> Non-blocking floating toast
+            </div>
+            <div class="flex items-center gap-2 text-[11px] text-zinc-600">
+              <span class="h-1.5 w-1.5 rounded-full bg-sky-500"></span> Offline Network Alerts
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Grid Section -->
+  <section id="features" class="px-6 py-20 max-w-5xl mx-auto">
+    <div class="text-center mb-16 max-w-xl mx-auto">
+      <h2 class="text-balance text-4xl font-extrabold tracking-[-0.04em] text-zinc-950 md:text-5xl">Everything you need to ship.</h2>
+      <p class="mx-auto mt-4 text-pretty text-sm leading-6 text-zinc-500">All PWA features pre-handled: iOS Safari instructions, interactive install panels, and custom subscription widgets.</p>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <!-- Feature 1 -->
+      <div class="rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-sm hover:shadow-md transition">
+        <div class="mb-6 flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-950 text-white">
+          <i data-lucide="download" class="h-4 w-4"></i>
+        </div>
+        <h3 class="text-sm font-bold text-zinc-950">Intelligent Installation</h3>
+        <p class="mt-2 text-xs leading-5 text-zinc-500">Auto-detects browser capabilities, renders specific prompts for iOS, Android, or desktop, and manages dismiss states locally.</p>
+      </div>
+      <!-- Feature 2 -->
+      <div class="rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-sm hover:shadow-md transition">
+        <div class="mb-6 flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-950 text-white">
+          <i data-lucide="bell" class="h-4 w-4"></i>
+        </div>
+        <h3 class="text-sm font-bold text-zinc-950">Push Manager Switch</h3>
+        <p class="mt-2 text-xs leading-5 text-zinc-500">A clean checkbox switch component that safely registers service workers and subscribes/unsubscribes to push notifications.</p>
+      </div>
+      <!-- Feature 3 -->
+      <div class="rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-sm hover:shadow-md transition">
+        <div class="mb-6 flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-950 text-white">
+          <i data-lucide="layout" class="h-4 w-4"></i>
+        </div>
+        <h3 class="text-sm font-bold text-zinc-950">Custom Prompt Dialog</h3>
+        <p class="mt-2 text-xs leading-5 text-zinc-500">Avoid default browser prompt dialogs. Renders premium custom in-app action sheets matching modern UI/UX principles.</p>
+      </div>
+      <!-- Feature 4 -->
+      <div class="rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-sm hover:shadow-md transition">
+        <div class="mb-6 flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-950 text-white">
+          <i data-lucide="wifi-off" class="h-4 w-4"></i>
+        </div>
+        <h3 class="text-sm font-bold text-zinc-950">Offline Network Alerts</h3>
+        <p class="mt-2 text-xs leading-5 text-zinc-500">Automatically detects when users lose internet connection and provides non-intrusive toasts to keep them informed.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step-by-Step Installation & Code Section -->
+  <section id="installation" class="px-6 py-20 bg-zinc-100/50 border-y border-zinc-200/30">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-12">
+        <p class="text-xs font-bold text-sky-500 tracking-wider uppercase mb-2">Step-by-step</p>
+        <h2 class="text-3xl font-extrabold tracking-[-0.04em] text-zinc-950">Get started in minutes</h2>
+      </div>
+
+      <div class="space-y-8">
+        
+        <!-- Step 1: Install Package -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+          <div class="md:col-span-1">
+            <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-zinc-900 text-[10px] font-bold text-white mb-2">1</span>
+            <h3 class="text-sm font-bold text-zinc-950">Install the library</h3>
+            <p class="text-xs text-zinc-500 mt-1">Run this terminal command in your root directory to install the package dependencies.</p>
+            <div class="mt-4 p-3 bg-emerald-50/50 rounded-xl border border-emerald-100">
+              <p class="text-[10px] text-emerald-800 leading-relaxed font-medium"><strong>What happens next?</strong> The library will automatically inject the components into your root layout. You will instantly see the "Install App" section at the bottom of your page, and the standard install icon will appear in the browser's address bar!</p>
+            </div>
+          </div>
+          <div class="md:col-span-2 relative">
+            <button onclick="copyToClipboard('npm i pwa-notifications', this)" class="absolute right-3 top-3 text-zinc-400 hover:text-zinc-700 transition" title="Copy code">
+              <i data-lucide="copy" class="h-4 w-4"></i>
+            </button>
+            <pre class="bg-zinc-950 text-zinc-50 p-4 rounded-xl text-xs font-mono overflow-x-auto code-scroll">npm i pwa-notifications</pre>
+          </div>
+        </div>
+
+        <!-- Step 2: Verify Manifest -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+          <div class="md:col-span-1">
+            <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-zinc-900 text-[10px] font-bold text-white mb-2">2</span>
+            <h3 class="text-sm font-bold text-zinc-950">Configure Manifest</h3>
+            <p class="text-xs text-zinc-500 mt-1">Edit your custom values in the newly injected <code>public/manifest.json</code>.</p>
+          </div>
+          <div class="md:col-span-2 relative">
+            <button onclick="copyToClipboard(document.getElementById('codeManifest').innerText, this)" class="absolute right-3 top-3 text-zinc-400 hover:text-zinc-700 transition" title="Copy code">
+              <i data-lucide="copy" class="h-4 w-4"></i>
+            </button>
+            <pre class="bg-zinc-950 text-zinc-50 p-4 rounded-xl text-xs font-mono overflow-x-auto code-scroll"><code id="codeManifest">{
+  "name": "My Application",
+  "short_name": "App",
+  "description": "Always Connected",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}</code></pre>
+          </div>
+        </div>
+
+        <!-- Step 3: Trigger Alert -->
+        <div id="usage" class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+          <div class="md:col-span-1">
+            <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-zinc-900 text-[10px] font-bold text-white mb-2">3</span>
+            <h3 class="text-sm font-bold text-zinc-950">Send Push Notifications</h3>
+            <p class="text-xs text-zinc-500 mt-1">In your backend, use the <code>web-push</code> package along with the generated VAPID keys in your <code>.env</code> file to send notifications to subscribed clients.</p>
+            <div class="mt-4 p-3 bg-sky-50/50 rounded-xl border border-sky-100">
+              <p class="text-[10px] text-sky-800 leading-relaxed font-medium"><strong>Note:</strong> The <code>subscription</code> object is automatically generated by the client component when a user turns notifications on. You should save this object to your database.</p>
+            </div>
+          </div>
+          <div class="md:col-span-2 relative font-mono text-xs">
+            <button onclick="copyToClipboard(document.getElementById('codeTrigger').innerText, this)" class="absolute right-3 top-3 text-zinc-400 hover:text-zinc-700 transition" title="Copy code">
+              <i data-lucide="copy" class="h-4 w-4"></i>
+            </button>
+            <pre class="bg-zinc-950 text-zinc-50 p-4 rounded-xl overflow-x-auto code-scroll"><code id="codeTrigger">// 1. Install web-push on your backend: npm install web-push
+const webpush = require("web-push");
+
+// 2. Configure VAPID keys (found in your generated .env file)
+webpush.setVapidDetails(
+  "mailto:your-email@example.com",
+  process.env.VAPID_PUBLIC_KEY, // Use NEXT_PUBLIC_ or VITE_ prefix if applicable
+  process.env.VAPID_PRIVATE_KEY
+);
+
+// 3. Send a push payload to a saved user subscription
+const userSubscription = { /* retrieved from your database */ };
+const payload = JSON.stringify({ 
+  title: "New Match!", 
+  body: "Check your alerts for the latest updates." 
+});
+
+webpush.sendNotification(userSubscription, payload)
+  .then(() => console.log("Alert sent successfully!"))
+  .catch(err => console.error("Error sending alert:", err));</code></pre>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Advanced Usage & Architecture Section -->
+  <section id="advanced" class="px-6 py-20 max-w-4xl mx-auto">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-16">
+        <p class="text-xs font-bold text-sky-500 tracking-wider uppercase mb-2">Deep Dive</p>
+        <h2 class="text-3xl font-extrabold tracking-[-0.04em] text-zinc-950">Advanced Usage & Architecture</h2>
+        <p class="mt-4 text-sm text-zinc-500">Manual usage instructions for frameworks without auto-injection, and best practices for scaling push notifications.</p>
+      </div>
+
+      <div class="space-y-12">
+        <!-- Manual Client Usage -->
+        <div>
+          <h3 class="text-xl font-bold text-zinc-900 mb-4 border-b border-zinc-100 pb-2">Usage in Standard React (Vite / CRA)</h3>
+          <p class="text-sm text-zinc-600 mb-4">If you are not using Next.js, the package will still generate the required <code>sw.js</code> and keys, but you will need to manually hook up the UI using the client API.</p>
+          <div class="relative">
+            <pre class="bg-zinc-950 text-zinc-50 p-4 rounded-xl text-xs font-mono overflow-x-auto code-scroll"><code>import { useEffect, useState } from 'react';
+import { registerServiceWorker, subscribeToPush, isPushSupported, onPWAInstallable, promptPWAInstall } from "pwa-notifications/client";
+
+export default function App() {
+  const [canInstall, setCanInstall] = useState(false);
+
+  useEffect(() => {
+    registerServiceWorker("/sw.js");
+    return onPWAInstallable((installable) => setCanInstall(installable));
+  }, []);
+
+  const handleSubscribe = async () => {
+    if (!isPushSupported()) return alert("Push not supported!");
+    const subscription = await subscribeToPush({
+      vapidKey: import.meta.env.VITE_VAPID_PUBLIC_KEY
+    });
+    // Send subscription to your backend
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;button onClick={handleSubscribe}&gt;Enable Notifications&lt;/button&gt;
+      {canInstall && &lt;button onClick={promptPWAInstall}&gt;Install App&lt;/button&gt;}
+    &lt;/div&gt;
+  );
+}</code></pre>
+          </div>
+        </div>
+
+        <!-- Usage in Vue 3 -->
+        <div>
+          <h3 class="text-xl font-bold text-zinc-900 mb-4 border-b border-zinc-100 pb-2">Usage in Vue 3</h3>
+          <div class="relative">
+            <pre class="bg-zinc-950 text-zinc-50 p-4 rounded-xl text-xs font-mono overflow-x-auto code-scroll"><code>&lt;script setup&gt;
+import { ref, onMounted, onUnmounted } from 'vue';
+import { registerServiceWorker, subscribeToPush, isPushSupported, onPWAInstallable, promptPWAInstall } from "pwa-notifications/client";
+
+const canInstall = ref(false);
+let cleanupInstallable = null;
+
+onMounted(() => {
+  registerServiceWorker("/sw.js");
+  cleanupInstallable = onPWAInstallable((installable) => {
+    canInstall.value = installable;
+  });
+});
+
+onUnmounted(() => {
+  if (cleanupInstallable) cleanupInstallable();
+});
+
+const handleSubscribe = async () => {
+  if (!isPushSupported()) return alert("Push not supported!");
+  const subscription = await subscribeToPush({
+    vapidKey: import.meta.env.VITE_VAPID_PUBLIC_KEY
+  });
+  // Send subscription to your backend
+};
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div&gt;
+    &lt;button @click="handleSubscribe"&gt;Enable Notifications&lt;/button&gt;
+    &lt;button v-if="canInstall" @click="promptPWAInstall"&gt;Install App&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</code></pre>
+          </div>
+        </div>
+
+        <!-- Server API -->
+        <div>
+          <h3 class="text-xl font-bold text-zinc-900 mb-4 border-b border-zinc-100 pb-2">Server-Side API</h3>
+          <p class="text-sm text-zinc-600 mb-4">Import from <code>pwa-notifications/server</code> to send push notifications securely from your Node.js backend.</p>
+          <div class="relative">
+            <pre class="bg-zinc-950 text-zinc-50 p-4 rounded-xl text-xs font-mono overflow-x-auto code-scroll"><code>import { sendPushNotification } from "pwa-notifications/server";
+
+// Example payload structure
+const subscription = { /* Retrieved from database */ };
+
+await sendPushNotification(subscription, {
+  title: "New Alert!",
+  body: "You have a new message.",
+  icon: "/icon-192x192.svg",
+  url: "/"
+}, {
+  vapidPublicKey: process.env.VAPID_PUBLIC_KEY,
+  vapidPrivateKey: process.env.VAPID_PRIVATE_KEY
+});</code></pre>
+          </div>
+        </div>
+
+        <!-- Architecture Guide -->
+        <div>
+          <h3 class="text-xl font-bold text-zinc-900 mb-4 border-b border-zinc-100 pb-2">Architecture Guide: Real-Time Hybrid Pattern</h3>
+          <p class="text-sm text-zinc-600 mb-4 leading-relaxed">For complex applications (like marketplaces or dashboard systems), developers often need <strong>real-time UI updates</strong> combined with <strong>OS-level PWA background push notifications</strong>. A generic, highly efficient architecture is the <strong>Hybrid Database/Real-Time Sync Pattern</strong>:</p>
+          <ol class="list-decimal list-inside text-sm text-zinc-600 space-y-2 mb-6 ml-2">
+            <li><strong>Database</strong>: Source of truth (Neon, Postgres, MySQL).</li>
+            <li><strong>Real-Time Trigger</strong>: Firestore, SSE, or Supabase. A counter is incremented when a notification is created.</li>
+            <li><strong>PWA Notifications</strong>: Registers service worker and subscriber endpoint.</li>
+          </ol>
+          <div class="relative">
+            <pre class="bg-zinc-950 text-zinc-50 p-4 rounded-xl text-xs font-mono overflow-x-auto code-scroll"><code>import { useEffect, useState } from "react";
+import { registerServiceWorker, subscribeToPush } from "pwa-notifications/client";
+import { onSnapshot, doc } from "firebase/firestore"; // Or your preferred websocket listener
+
+export function useNotifications(userId: string) {
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    // 1. Register PWA Service Worker
+    registerServiceWorker("/sw.js");
+
+    // 2. Real-time trigger: refresh UI list when counter updates
+    const unsubscribe = onSnapshot(doc(db, "users", userId), () => {
+      // Fetch notifications from DB and update UI
+    });
+
+    return () => unsubscribe();
+  }, [userId]);
+
+  return { notifications };
+}</code></pre>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQs Section -->
+  <section id="faqs" class="px-6 py-20 max-w-3xl mx-auto">
+    <div class="text-center mb-12">
+      <p class="text-xs font-bold text-sky-500 tracking-wider uppercase mb-2">Help Center</p>
+      <h2 class="text-3xl font-extrabold tracking-[-0.04em] text-zinc-950">Frequently Asked Questions</h2>
+    </div>
+
+    <div class="divide-y divide-zinc-200 rounded-2xl border border-zinc-200 bg-white px-5 shadow-sm">
+      <!-- Q1 -->
+      <div class="py-1 border-b border-zinc-200 last:border-0">
+        <button onclick="toggleFaq(this)" class="flex w-full items-center justify-between py-4 text-left text-sm font-semibold text-zinc-800 focus:outline-none">
+          <span>What happens if the user loses internet connection?</span>
+          <i data-lucide="chevron-down" class="h-4 w-4 text-zinc-400 transition-transform duration-200"></i>
+        </button>
+        <div class="faq-content overflow-hidden max-h-0 transition-all duration-300 ease-in-out">
+          <p class="pb-4 text-xs leading-5 text-zinc-500">The library automatically injects a lightweight `NetworkAlert` component. It gracefully shows an offline toast when the connection drops, and notifies users once they are back online—all without any manual setup.</p>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="py-1 border-b border-zinc-200 last:border-0">
+        <button onclick="toggleFaq(this)" class="flex w-full items-center justify-between py-4 text-left text-sm font-semibold text-zinc-800 focus:outline-none">
+          <span>Do I need to manually configure the Service Worker?</span>
+          <i data-lucide="chevron-down" class="h-4 w-4 text-zinc-400 transition-transform duration-200"></i>
+        </button>
+        <div class="faq-content overflow-hidden max-h-0 transition-all duration-300 ease-in-out">
+          <p class="pb-4 text-xs leading-5 text-zinc-500">No. The installation script acts as a "meta-bundler", automatically generating and injecting an optimized `sw.js` and `manifest.json` right into your project's public directory during post-install.</p>
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="py-1 border-b border-zinc-200 last:border-0">
+        <button onclick="toggleFaq(this)" class="flex w-full items-center justify-between py-4 text-left text-sm font-semibold text-zinc-800 focus:outline-none">
+          <span>Is Vue.js supported, or just React?</span>
+          <i data-lucide="chevron-down" class="h-4 w-4 text-zinc-400 transition-transform duration-200"></i>
+        </button>
+        <div class="faq-content overflow-hidden max-h-0 transition-all duration-300 ease-in-out">
+          <p class="pb-4 text-xs leading-5 text-zinc-500">Both are supported! The package detects your framework upon installation and injects the exact components needed—whether they are React/Next.js components or Vue/Nuxt files.</p>
+        </div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="py-1">
+        <button onclick="toggleFaq(this)" class="flex w-full items-center justify-between py-4 text-left text-sm font-semibold text-zinc-800 focus:outline-none">
+          <span>How are push notifications authenticated?</span>
+          <i data-lucide="chevron-down" class="h-4 w-4 text-zinc-400 transition-transform duration-200"></i>
+        </button>
+        <div class="faq-content overflow-hidden max-h-0 transition-all duration-300 ease-in-out">
+          <p class="pb-4 text-xs leading-5 text-zinc-500">The library automatically generates highly-secure VAPID public/private key pairs and adds them to your local environment variables. Your frontend handles the public key subscription while your backend securely fires the push events.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Mockup Interactivity Script -->
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Copy to clipboard helper
+    function copyToClipboard(text, button) {
+      navigator.clipboard.writeText(text).then(() => {
+        const iconContainer = button.innerHTML;
+        button.innerHTML = '<i data-lucide="check" class="h-4 w-4 text-emerald-500"></i>';
+        lucide.createIcons();
+        setTimeout(() => {
+          button.innerHTML = iconContainer;
+          lucide.createIcons();
+        }, 2000);
+      });
+    }
+
+    // Toggle FAQ Collapse
+    function toggleFaq(button) {
+      const content = button.nextElementSibling;
+      const icon = button.querySelector('[data-lucide="chevron-down"]');
+      
+      if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+        content.style.maxHeight = '0px';
+        icon.style.transform = 'rotate(0deg)';
+      } else {
+        content.style.maxHeight = content.scrollHeight + 'px';
+        icon.style.transform = 'rotate(180deg)';
+      }
+    }
+
+    // Interactive Phone mockup handlers
+    function simulateInstallPrompt() {
+      document.getElementById('mockInstallPrompt').classList.remove('hidden');
+    }
+    
+    function closeInstallPrompt() {
+      document.getElementById('mockInstallPrompt').classList.add('hidden');
+    }
+
+    function simulateInstallSuccess() {
+      closeInstallPrompt();
+      showMockToast("PWA client installed successfully!");
+    }
+
+    // Modal Control
+    function toggleMockModal(show) {
+      if (show) {
+        document.getElementById('mockSettingsModal').classList.remove('hidden');
+      } else {
+        document.getElementById('mockSettingsModal').classList.add('hidden');
+      }
+    }
+
+    function toggleMockSubscription(btn) {
+      const dot = btn.querySelector('span');
+      const isSubscribed = dot.classList.contains('translate-x-4');
+      
+      if (isSubscribed) {
+        dot.classList.remove('translate-x-4');
+        dot.classList.add('translate-x-0');
+        btn.classList.remove('bg-sky-600');
+        btn.classList.add('bg-zinc-300');
+        showMockToast("Unsubscribed from alerts", "info");
+      } else {
+        dot.classList.remove('translate-x-0');
+        dot.classList.add('translate-x-4');
+        btn.classList.remove('bg-zinc-300');
+        btn.classList.add('bg-sky-600');
+        showMockToast("Subscribed to push alerts!");
+      }
+    }
+
+    function showMockToast(message, type = "success") {
+      const toast = document.getElementById('mockToast');
+      const toastText = document.getElementById('toastText');
+      
+      toastText.innerText = message;
+      toast.classList.remove('-translate-y-16', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('-translate-y-16', 'opacity-0');
+      }, 3000);
+    }
+
+    let offlineSimulated = false;
+    function simulateOfflineMode(btn) {
+      const offlineAlert = document.getElementById('mockOfflineAlert');
+      offlineSimulated = !offlineSimulated;
+      
+      if (offlineSimulated) {
+        offlineAlert.classList.remove('translate-y-10', 'opacity-0');
+        offlineAlert.classList.add('translate-y-0', 'opacity-100');
+        btn.innerText = "Restore Connection";
+        btn.classList.replace('bg-red-50', 'bg-emerald-50');
+        btn.classList.replace('border-red-200', 'border-emerald-200');
+        btn.classList.replace('text-red-600', 'text-emerald-600');
+        btn.classList.replace('hover:bg-red-100', 'hover:bg-emerald-100');
+      } else {
+        // Change to restored state briefly
+        offlineAlert.innerHTML = `
+            <div class="flex items-start gap-3 rounded-xl p-4 shadow-2xl border w-full transition-colors bg-emerald-50 border-emerald-200 text-emerald-800">
+              <div class="mt-0.5 shrink-0">
+                <i data-lucide="wifi" class="h-4 w-4 text-emerald-500"></i>
+              </div>
+              <div class="flex-1 text-left">
+                <h3 class="text-xs font-bold">Connection restored</h3>
+                <div class="mt-1 text-[10px] opacity-90 leading-relaxed text-pretty">
+                  You are back online.
+                </div>
+              </div>
+            </div>
+        `;
+        lucide.createIcons();
+        
+        btn.innerText = "Simulate Offline Status";
+        btn.classList.replace('bg-emerald-50', 'bg-red-50');
+        btn.classList.replace('border-emerald-200', 'border-red-200');
+        btn.classList.replace('text-emerald-600', 'text-red-600');
+        btn.classList.replace('hover:bg-emerald-100', 'hover:bg-red-100');
+        
+        setTimeout(() => {
+          offlineAlert.classList.remove('translate-y-0', 'opacity-100');
+          offlineAlert.classList.add('translate-y-10', 'opacity-0');
+          
+          setTimeout(() => {
+            offlineAlert.innerHTML = `
+              <div class="flex items-start gap-3 rounded-xl p-4 shadow-2xl border w-full transition-colors bg-red-50 border-red-200 text-red-800">
+                <div class="mt-0.5 shrink-0">
+                  <i data-lucide="wifi-off" class="h-4 w-4 text-red-500"></i>
+                </div>
+                <div class="flex-1 text-left">
+                  <h3 class="text-xs font-bold">You are offline</h3>
+                  <div class="mt-1 text-[10px] opacity-90 leading-relaxed text-pretty">
+                    Please check your internet connection.
+                  </div>
+                </div>
+              </div>
+            `;
+            lucide.createIcons();
+          }, 500);
+        }, 3000);
+      }
+    }
+  </script>
+</body>
+</html>

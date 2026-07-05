@@ -255,7 +255,7 @@ export default function InstallPrompt({ isOpen, onClose, canInstall }: InstallPr
 // PushNotificationManager — toggle for push subscription + test notification button.
 const pushManagerContent = `"use client";
 import { useEffect, useState } from "react";
-import { subscribeToPush, isPushSupported } from "pwa-notifications/client";
+import { subscribeToPush, isPushSupported, isPWAInstalled } from "pwa-notifications/client";
 
 export default function PushNotificationManager() {
   const [supported, setSupported] = useState(false);
@@ -263,8 +263,10 @@ export default function PushNotificationManager() {
   const [isLoading, setIsLoading] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
   const [isDark, setIsDark] = useState(false);
+  const [isInstalled, setIsInstalled] = useState<boolean | null>(null);
 
   useEffect(() => {
+    setIsInstalled(isPWAInstalled() ?? false);
     setSupported(isPushSupported());
     if (isPushSupported()) {
       navigator.serviceWorker.ready.then(reg => {
@@ -327,6 +329,11 @@ export default function PushNotificationManager() {
   };
 
   const handleToggleSubscription = async () => {
+    if (!navigator.onLine) {
+      showToast("You are offline. Please connect to the internet to update your subscription.", "error");
+      return;
+    }
+
     setIsLoading(true);
     try {
       if (isSubscribed) {
@@ -424,6 +431,12 @@ export default function PushNotificationManager() {
             </div>
           </label>
         </div>
+        {isInstalled === false && (
+          <div style={{ marginTop: '1rem', padding: '0.75rem', backgroundColor: isDark ? '#332914' : '#fffbeb', borderRadius: '0.5rem', border: isDark ? '1px solid #713f12' : '1px solid #fde68a', fontSize: '0.75rem', color: isDark ? '#fde047' : '#b45309', display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
+            <span style={{ marginTop: '0.125rem' }}>ℹ️</span>
+            <span>For the best experience, please install this site as a standalone app to reliably receive push notifications.</span>
+          </div>
+        )}
         {isSubscribed && (
           <div style={{ marginTop: '1.25rem', borderTop: isDark ? '1px solid #334155' : '1px solid #f1f5f9', paddingTop: '1rem', display: 'flex', justifyContent: 'flex-end' }}>
             <button
@@ -939,6 +952,110 @@ export default function EnableNotifications() {
 }
 `;
 
+// NetworkAlert — status toast when internet connection drops/restores.
+const networkAlertContent = `"use client";
+
+import { useState, useEffect } from "react";
+
+export default function NetworkAlert() {
+  const [isOnline, setIsOnline] = useState<boolean>(true);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [justRestored, setJustRestored] = useState<boolean>(false);
+
+  useEffect(() => {
+    // Initial check
+    setIsOnline(navigator.onLine);
+    if (!navigator.onLine) {
+      setShowAlert(true);
+    }
+
+    const handleOnline = () => {
+      setIsOnline(true);
+      setShowAlert(true);
+      setJustRestored(true);
+      
+      // Auto-hide the "Connection restored" alert after 4 seconds
+      setTimeout(() => {
+        setShowAlert(false);
+        setJustRestored(false);
+      }, 4000);
+    };
+
+    const handleOffline = () => {
+      setIsOnline(false);
+      setShowAlert(true);
+      setJustRestored(false);
+    };
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
+  if (!showAlert) return null;
+
+  return (
+    <div className="fixed bottom-6 right-6 z-50 transition-all duration-500 ease-out translate-y-0 opacity-100">
+      <div 
+        className={\`flex items-start gap-3 rounded-xl p-4 shadow-2xl border max-w-sm w-full transition-colors \${
+          !isOnline 
+            ? "bg-red-50 border-red-200 text-red-800 dark:bg-[#3f1618] dark:border-red-900 dark:text-red-100" 
+            : "bg-emerald-50 border-emerald-200 text-emerald-800 dark:bg-[#062c1b] dark:border-emerald-900 dark:text-emerald-100"
+        }\`}
+        role="alert"
+      >
+        <div className="mt-0.5 shrink-0">
+          {!isOnline ? (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500 dark:text-red-400">
+              <path d="m2 2 20 20"/>
+              <path d="M8.5 16.5a5 5 0 0 1 7 0"/>
+              <path d="M2 8.82a15 15 0 0 1 4.17-2.65"/>
+              <path d="M10.66 5c4.01-.36 8.14.9 11.34 3.82"/>
+            </svg>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-500 dark:text-emerald-400">
+              <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
+              <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
+              <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+              <line x1="12" y1="20" x2="12.01" y2="20"/>
+            </svg>
+          )}
+        </div>
+        
+        <div className="flex-1">
+          <h3 className="text-sm font-bold">
+            {!isOnline ? "You are offline" : "Connection restored"}
+          </h3>
+          <div className="mt-1 text-sm opacity-90 leading-relaxed text-pretty">
+            {!isOnline 
+              ? "Please check your internet connection. Some features may not be available." 
+              : "You are back online. All features are fully functional."}
+          </div>
+        </div>
+
+        {!isOnline && (
+          <button 
+            onClick={() => setShowAlert(false)}
+            className={\`mt-0.5 shrink-0 rounded-md p-1 opacity-70 hover:opacity-100 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-1 \${
+              !isOnline ? "focus:ring-red-400 dark:hover:bg-red-900/50" : "focus:ring-emerald-400 dark:hover:bg-emerald-900/50"
+            }\`}
+            aria-label="Close alert"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}`;
+
 // ─────────────────────────────────────────────────────────────────────────────
 // FRAMEWORK / BUNDLER DETECTION
 // Reads the host project's package.json to decide which templates to inject
@@ -1326,13 +1443,14 @@ const handleInstall = async () => {
 // PushNotificationManager (Vue)
 const vuePushManagerContent = `<script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-import { subscribeToPush, isPushSupported } from 'pwa-notifications/client'
+import { subscribeToPush, isPushSupported, isPWAInstalled } from 'pwa-notifications/client'
 
 const supported = ref(false)
 const isSubscribed = ref(false)
 const isLoading = ref(false)
 const toast = ref<{ message: string; type: 'success' | 'error' | 'info' } | null>(null)
 const isDark = ref(false)
+const isInstalled = ref<boolean | null>(null)
 
 let observer: MutationObserver | null = null
 let timer: ReturnType<typeof setTimeout> | null = null
@@ -1343,6 +1461,7 @@ const checkDark = () => {
 }
 
 onMounted(() => {
+  isInstalled.value = isPWAInstalled() ?? false
   supported.value = isPushSupported()
   if (isPushSupported()) {
     navigator.serviceWorker.ready.then((reg) => {
@@ -1397,6 +1516,11 @@ const handleSendTestNotification = async () => {
 }
 
 const handleToggleSubscription = async () => {
+  if (!navigator.onLine) {
+    showToast('You are offline. Please connect to the internet to update your subscription.', 'error')
+    return
+  }
+
   isLoading.value = true
   try {
     if (isSubscribed.value) {
@@ -1475,6 +1599,15 @@ const handleToggleSubscription = async () => {
               :style="{ left: isSubscribed ? '1.4375rem' : '0.1875rem' }" />
           </div>
         </label>
+      </div>
+      <div v-if="isInstalled === false" style="margin-top: 1rem; padding: 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; display: flex; gap: 0.5rem; align-items: flex-start;"
+        :style="{
+          backgroundColor: isDark ? '#332914' : '#fffbeb',
+          border: isDark ? '1px solid #713f12' : '1px solid #fde68a',
+          color: isDark ? '#fde047' : '#b45309'
+        }">
+        <span style="margin-top: 0.125rem;">ℹ️</span>
+        <span>For the best experience, please install this site as a standalone app to reliably receive push notifications.</span>
       </div>
       <div v-if="isSubscribed" style="margin-top: 1.25rem; border-top: 1px solid; padding-top: 1rem; display: flex; justify-content: flex-end;"
         :style="{ borderTopColor: isDark ? '#334155' : '#f1f5f9' }">
@@ -2058,8 +2191,9 @@ function injectManifestAndComponent(initCwd, hasSrcDir) {
       const importPath = hasSrcDir ? "@/components/pwa-notifications/EnableNotifications" : "@/components/pwa-notifications/EnableNotifications";
       const relativeImport = hasSrcDir ? "../components/pwa-notifications/EnableNotifications" : "../components/pwa-notifications/EnableNotifications";
       const relativeInstallSection = hasSrcDir ? "../components/pwa-notifications/InstallSection" : "../components/pwa-notifications/InstallSection";
+      const relativeNetworkAlert = hasSrcDir ? "../components/pwa-notifications/NetworkAlert" : "../components/pwa-notifications/NetworkAlert";
       
-      const componentImport = `import EnableNotifications from "${relativeImport}";\nimport InstallSection from "${relativeInstallSection}";\n`;
+      const componentImport = `import EnableNotifications from "${relativeImport}";\nimport InstallSection from "${relativeInstallSection}";\nimport NetworkAlert from "${relativeNetworkAlert}";\n`;
       if (!content.includes('EnableNotifications')) {
         content = componentImport + content;
         
@@ -2072,7 +2206,7 @@ function injectManifestAndComponent(initCwd, hasSrcDir) {
       
       if (!content.includes('<InstallSection />')) {
         if (content.includes('</body>')) {
-          content = content.replace('</body>', `  <InstallSection />\n      </body>`);
+          content = content.replace('</body>', `  <InstallSection />\n        <NetworkAlert />\n      </body>`);
           modified = true;
         }
       }
@@ -2250,6 +2384,7 @@ try {
   writeIfNotExist(path.join(pwaComponentsDir, 'InstallPrompt' + componentExt), installPrompt);
   writeIfNotExist(path.join(pwaComponentsDir, 'PushNotificationManager' + componentExt), pushManager);
   writeIfNotExist(path.join(pwaComponentsDir, 'InstallSection' + componentExt), installSection);
+  writeIfNotExist(path.join(pwaComponentsDir, 'NetworkAlert' + componentExt), networkAlertContent);
   
   if (framework === "next") {
     injectManifestAndComponent(initCwd, hasSrcDir);

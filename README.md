@@ -7,6 +7,7 @@
 A framework-agnostic, zero-config toolkit designed to instantly equip your web applications with robust Progressive Web App (PWA) capabilities and Push Notifications. It handles the heavy lifting of service worker registration, VAPID key generation, manifest injection, and provides beautiful UI components.
 
 ## Features
+
 - **Zero-Config Auto-Injection:** Automatically injects `manifest.json`, standard PWA icons, and necessary code into Next.js layout upon installation.
 - **Auto-Generated VAPID Keys:** Safely generates and injects your push notification VAPID keys into `.env.local` or `.env`.
 - **Universal Installation Prompts:** Detects user OS and provides tailored installation instructions for iOS, Android, and Desktop.
@@ -14,12 +15,15 @@ A framework-agnostic, zero-config toolkit designed to instantly equip your web a
 - **Framework Agnostic Core:** Works flawlessly in Next.js, standard React (Vite/CRA), Vue, and Svelte.
 
 ## Quick Installation
+
 ```bash
 npm install pwa-notifications
 ```
 
 ### Post-Installation
+
 If you are using **Next.js**, a `postinstall` script runs automatically:
+
 1. Generates `manifest.json` and PWA icons in `public/`.
 2. Creates reusable React UI components in `components/pwa-notifications/`.
 3. Injects the `EnableNotifications` banner into `app/layout.tsx`.
@@ -31,21 +35,24 @@ For **Standard React (Vite)** or **Vue**, the script generates VAPID keys and `p
 ## Usage
 
 ### Usage in Next.js
+
 Components are auto-injected directly into your `components/pwa-notifications/` folder for complete freedom to customize.
+
 - **EnableNotifications:** A sleek, sticky banner auto-injected at the bottom of your layout.
 - **InstallPrompt:** OS-specific instructions modal (iOS Share, Android Chrome Menu, etc.).
 - **PushNotificationManager:** Customizable settings block showing subscription status.
 - **InstallSection:** Massive, highly-visual marketing block for your homepage.
 
 ### Usage in Standard React (Vite / CRA)
+
 ```tsx
-import { useEffect, useState } from 'react';
-import { 
-  registerServiceWorker, 
-  subscribeToPush, 
+import { useEffect, useState } from "react";
+import {
+  registerServiceWorker,
+  subscribeToPush,
   isPushSupported,
   onPWAInstallable,
-  promptPWAInstall 
+  promptPWAInstall,
 } from "pwa-notifications/client";
 
 export default function App() {
@@ -59,7 +66,7 @@ export default function App() {
   const handleSubscribe = async () => {
     if (!isPushSupported()) return alert("Push not supported!");
     const subscription = await subscribeToPush({
-      vapidKey: import.meta.env.VITE_VAPID_PUBLIC_KEY // Adjust based on your bundler
+      vapidKey: import.meta.env.VITE_VAPID_PUBLIC_KEY, // Adjust based on your bundler
     });
     // Send subscription to your backend
   };
@@ -74,15 +81,16 @@ export default function App() {
 ```
 
 ### Usage in Vue 3
+
 ```vue
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
-import { 
-  registerServiceWorker, 
-  subscribeToPush, 
+import { ref, onMounted, onUnmounted } from "vue";
+import {
+  registerServiceWorker,
+  subscribeToPush,
   isPushSupported,
   onPWAInstallable,
-  promptPWAInstall 
+  promptPWAInstall,
 } from "pwa-notifications/client";
 
 const canInstall = ref(false);
@@ -102,7 +110,7 @@ onUnmounted(() => {
 const handleSubscribe = async () => {
   if (!isPushSupported()) return alert("Push not supported!");
   const subscription = await subscribeToPush({
-    vapidKey: import.meta.env.VITE_VAPID_PUBLIC_KEY
+    vapidKey: import.meta.env.VITE_VAPID_PUBLIC_KEY,
   });
   // Send subscription to your backend
 };
@@ -117,37 +125,50 @@ const handleSubscribe = async () => {
 ```
 
 ## Server-Side API
+
 Import from `pwa-notifications/server` to send push notifications from Node.js, Express, Next.js, or Nuxt:
 
 ```typescript
 import { sendPushNotification } from "pwa-notifications/server";
 
 // Example payload structure
-const subscription = { /* Retrieved from database */ };
+const subscription = {
+  /* Retrieved from database */
+};
 
-await sendPushNotification(subscription, {
-  title: "New Alert!",
-  body: "You have a new message.",
-  icon: "/icon-192x192.svg",
-  url: "/"
-}, {
-  vapidPublicKey: process.env.VAPID_PUBLIC_KEY,
-  vapidPrivateKey: process.env.VAPID_PRIVATE_KEY
-});
+await sendPushNotification(
+  subscription,
+  {
+    title: "New Alert!",
+    body: "You have a new message.",
+    icon: "/icon-192x192.svg",
+    url: "/",
+  },
+  {
+    vapidPublicKey: process.env.VAPID_PUBLIC_KEY,
+    vapidPrivateKey: process.env.VAPID_PRIVATE_KEY,
+  },
+);
 ```
 
 ## Architecture Guide: Real-Time Hybrid Notification Pattern
+
 For complex applications (like marketplaces or dashboard systems), developers often need **real-time UI updates** combined with **OS-level PWA background push notifications**.
 
 A generic, highly efficient architecture is the **Hybrid Database/Real-Time Sync Pattern**:
+
 1. **Database**: Source of truth (Neon, Postgres, MySQL).
 2. **Real-Time Trigger**: Firestore, SSE, or Supabase. A counter is incremented when a notification is created.
 3. **PWA Notifications**: Registers service worker and subscriber endpoint.
 
 React Hook Example:
+
 ```typescript
 import { useEffect, useState } from "react";
-import { registerServiceWorker, subscribeToPush } from "pwa-notifications/client";
+import {
+  registerServiceWorker,
+  subscribeToPush,
+} from "pwa-notifications/client";
 import { onSnapshot, doc } from "firebase/firestore"; // Or your preferred websocket listener
 
 export function useNotifications(userId: string) {
@@ -170,17 +191,17 @@ export function useNotifications(userId: string) {
 ```
 
 ## Requirements
+
 - Browser with Service Worker Support
 - HTTPS (or localhost for development)
 - Node.js environment for sending notifications
 
-## Contributing
-Contributions to the auto-injection script to support automatic component generation for Vue and Vite are welcome!
-
 ## License
+
 MIT License
 
 ## Author
+
 **Rey Mark Tapar**
 
 [Website](https://reymarktapar.vercel.app) | [GitHub](https://github.com/dev-reymark/pwa-notifications)
