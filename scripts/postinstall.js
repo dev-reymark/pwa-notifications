@@ -134,7 +134,8 @@ export default function InstallPrompt({ isOpen, onClose, canInstall }: InstallPr
         maxWidth: '26rem',
         padding: '1.5rem',
         boxShadow: isDark ? '0 25px 50px -12px rgba(0, 0, 0, 0.5)' : '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-        border: isDark ? '1px solid #334155' : '1px solid #f1f5f9'
+        border: isDark ? '1px solid #334155' : '1px solid #f1f5f9',
+        textAlign: 'left'
       }}>
         {/* Header */}
         <div style={{ marginBottom: '1rem' }}>
@@ -376,7 +377,7 @@ export default function PushNotificationManager() {
 
   return (
     <div style={{ position: 'relative' }}>
-      <div style={{ padding: '1.5rem', backgroundColor: isDark ? '#1e293b' : 'white', border: isDark ? '1px solid #334155' : '1px solid #e5e7eb', borderRadius: '0.75rem', fontFamily: 'sans-serif', maxWidth: '32rem', boxSizing: 'border-box' }}>
+      <div style={{ padding: '1.5rem', backgroundColor: isDark ? '#1e293b' : 'white', border: isDark ? '1px solid #334155' : '1px solid #e5e7eb', borderRadius: '0.75rem', fontFamily: 'sans-serif', maxWidth: '32rem', boxSizing: 'border-box', textAlign: 'left' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             <p style={{ margin: '0 0 0.25rem 0', fontWeight: 500, color: isDark ? '#f8fafc' : '#1f2937' }}>Push Notifications</p>
@@ -698,14 +699,14 @@ export default function InstallSection({ appName: propAppName }: InstallSectionP
 
   return (
     <>
-      <section style={{ backgroundColor: isDark ? '#0f172a' : '#f3f4f6', padding: '4rem 1.5rem', fontFamily: 'sans-serif' }}>
+      <section style={{ backgroundColor: isDark ? '#0f172a' : '#f3f4f6', padding: '4rem 1.5rem', fontFamily: 'sans-serif', textAlign: 'left' }}>
       <div style={{ maxWidth: '64rem', margin: '0 auto', display: 'grid', gap: '3rem', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', alignItems: 'center' }}>
         
-        <div>
-          <h2 style={{ fontSize: '2.5rem', fontWeight: 'bold', color: isDark ? '#f8fafc' : '#111827', margin: '0 0 1rem 0', lineHeight: 1.2 }}>
+        <div style={{ textAlign: 'left' }}>
+          <h2 style={{ fontSize: '2.5rem', fontWeight: 'bold', color: isDark ? '#f8fafc' : '#111827', margin: '0 0 1rem 0', lineHeight: 1.2, textAlign: 'left' }}>
             Add {appName} <span style={{ color: isDark ? '#4b5563' : '#9ca3af', display: 'block' }}>to your home screen.</span>
           </h2>
-          <p style={{ color: isDark ? '#94a3b8' : '#4b5563', fontSize: '1.125rem', marginBottom: '2rem' }}>
+          <p style={{ color: isDark ? '#94a3b8' : '#4b5563', fontSize: '1.125rem', marginBottom: '2rem', textAlign: 'left' }}>
             Open faster, receive timely updates, and keep your work moving from any device.
           </p>
 
@@ -774,7 +775,7 @@ export default function InstallSection({ appName: propAppName }: InstallSectionP
           <div style={{ position: 'absolute', left: '2rem', right: '2rem', top: '2rem', bottom: '2rem', borderRadius: '44px', border: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(255, 255, 255, 0.6)', backgroundColor: isDark ? 'rgba(30, 41, 59, 0.45)' : 'rgba(255, 255, 255, 0.45)', boxShadow: isDark ? '0 30px 120px rgba(0, 0, 0, 0.5)' : '0 30px 120px rgba(148, 163, 184, 0.16)', backdropFilter: 'blur(24px)', zIndex: 0 }} />
 
           {/* Premium Phone Mockup Container */}
-          <div style={{ position: 'relative', width: '18rem', borderRadius: '3rem', backgroundColor: '#0f172a', padding: '3px', boxShadow: '0 35px 110px rgba(15, 23, 42, 0.28)', zIndex: 1 }}>
+          <div style={{ position: 'relative', width: '18rem', borderRadius: '3rem', backgroundColor: '#0f172a', padding: '3px', boxShadow: '0 35px 110px rgba(15, 23, 42, 0.28)', zIndex: 1, textAlign: 'left' }}>
             <div style={{ width: '100%', height: '520px', backgroundColor: isDark ? '#0f172a' : 'white', borderRadius: '2.8rem', overflow: 'hidden', position: 'relative' }}>
               
               {/* iPhone Status Bar / Notch */}
@@ -1265,7 +1266,8 @@ const handleInstall = async () => {
         maxWidth: '26rem',
         padding: '1.5rem',
         boxShadow: isDark ? '0 25px 50px -12px rgba(0, 0, 0, 0.5)' : '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-        border: isDark ? '1px solid #334155' : '1px solid #f1f5f9'
+        border: isDark ? '1px solid #334155' : '1px solid #f1f5f9',
+        textAlign: 'left'
       }"
     >
       <!-- Header -->
@@ -1787,7 +1789,7 @@ const handleDismiss = () => {
       :style="{ backgroundColor: isDark ? '#0f172a' : '#f3f4f6' }">
     <div style="max-width: 64rem; margin: 0 auto; display: grid; gap: 3rem; gridTemplateColumns: repeat(auto-fit, minmax(300px, 1fr)); alignItems: center;">
       
-      <div>
+      <div style="textAlign: left;">
         <span style="display: inline-block; padding: 0.25rem 0.75rem; fontSize: 0.75rem; fontWeight: bold; textTransform: uppercase; letterSpacing: 0.1em; borderRadius: 9999px; marginBottom: 1rem;"
           :style="{
             backgroundColor: isDark ? '#0f172a' : '#e0f2fe',
@@ -1796,11 +1798,11 @@ const handleDismiss = () => {
           }">
           Add to Home Screen
         </span>
-        <h2 style="fontSize: 2.5rem; fontWeight: bold; margin: 0 0 1rem 0; lineHeight: 1.2;"
+        <h2 style="fontSize: 2.5rem; fontWeight: bold; margin: 0 0 1rem 0; lineHeight: 1.2; textAlign: left;"
           :style="{ color: isDark ? '#f8fafc' : '#111827' }">
           Add {{ appName }} <span :style="{ color: isDark ? '#4b5563' : '#9ca3af', display: 'block' }">to your home screen.</span>
         </h2>
-        <p style="fontSize: 1.125rem; marginBottom: 2rem;"
+        <p style="fontSize: 1.125rem; marginBottom: 2rem; textAlign: left;"
           :style="{ color: isDark ? '#94a3b8' : '#4b5563' }">
           Open faster, receive timely updates, and keep your work moving from any device.
         </p>
@@ -1941,7 +1943,7 @@ const handleDismiss = () => {
           }" />
 
         <!-- Phone Mockup -->
-        <div style="position: relative; width: 18rem; borderRadius: 3rem; backgroundColor: '#0f172a'; padding: 3px; boxShadow: 0 35px 110px rgba(15, 23, 42, 0.28); zIndex: 1;">
+        <div style="position: relative; width: 18rem; borderRadius: 3rem; backgroundColor: '#0f172a'; padding: 3px; boxShadow: 0 35px 110px rgba(15, 23, 42, 0.28); zIndex: 1; textAlign: left;">
           <div style="width: 100%; height: 520px; borderRadius: 2.8rem; overflow: hidden; position: relative;"
             :style="{ backgroundColor: isDark ? '#0f172a' : 'white' }">
             
@@ -2309,6 +2311,91 @@ function injectReactVitePWA(initCwd, hasSrcDir, pwaComponentsDir) {
 }
 
 /**
+ * Injects the manifest <link>, beforeinstallprompt listener, and PWA component
+ * imports into a Vue + Vite project's index.html and App.vue.
+ */
+function injectVueVitePWA(initCwd, hasSrcDir, pwaComponentsDir) {
+  // 1. Inject manifest link into index.html
+  const indexHtmlPath = path.join(initCwd, 'index.html');
+  if (fs.existsSync(indexHtmlPath)) {
+    let htmlContent = fs.readFileSync(indexHtmlPath, 'utf8');
+    const linkTag = `<link rel="manifest" href="/manifest.json" />`;
+    const scriptTag = `<script>window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); window.deferredPrompt = e; });</script>`;
+    let htmlModified = false;
+    if (!htmlContent.includes('rel="manifest"')) {
+      if (htmlContent.includes('</head>')) {
+        htmlContent = htmlContent.replace('</head>', `    ${linkTag}\n    ${scriptTag}\n  </head>`);
+        htmlModified = true;
+      }
+    } else if (!htmlContent.includes('window.deferredPrompt = e')) {
+      if (htmlContent.includes('</head>')) {
+        htmlContent = htmlContent.replace('</head>', `    ${scriptTag}\n  </head>`);
+        htmlModified = true;
+      }
+    }
+    if (htmlModified) {
+      fs.writeFileSync(indexHtmlPath, htmlContent);
+      console.log(`✅ pwa-notifications: Injected manifest link and early listener into index.html`);
+    }
+  }
+
+  // 2. Inject components into App.vue
+  const possibleAppFiles = [
+    path.join(initCwd, 'src', 'App.vue'),
+    path.join(initCwd, 'App.vue')
+  ];
+
+  for (const appFile of possibleAppFiles) {
+    if (fs.existsSync(appFile)) {
+      let content = fs.readFileSync(appFile, 'utf8');
+      let modified = false;
+
+      // Calculate relative import path
+      let relativeImportDir = path.relative(path.dirname(appFile), pwaComponentsDir).replace(/\\/g, '/');
+      if (!relativeImportDir.startsWith('.') && !relativeImportDir.startsWith('/')) {
+        relativeImportDir = './' + relativeImportDir;
+      }
+
+      const importEnableNotifications = `import EnableNotifications from '${relativeImportDir}/EnableNotifications.vue';`;
+      const importInstallSection = `import InstallSection from '${relativeImportDir}/InstallSection.vue';`;
+      const importNetworkAlert = `import NetworkAlert from '${relativeImportDir}/NetworkAlert.vue';`;
+
+      // Inject imports into <script setup> or <script>
+      if (!content.includes('EnableNotifications')) {
+        const scriptMatch = content.match(/<script([^>]*)>/);
+        if (scriptMatch) {
+          content = content.replace(/(<script[^>]*>)/, `$1\n${importEnableNotifications}\n${importInstallSection}\n${importNetworkAlert}`);
+          modified = true;
+        }
+      }
+
+      // Inject components into <template>
+      if (!content.includes('<EnableNotifications />') && !content.includes('<EnableNotifications/>')) {
+        const templateMatch = content.match(/<template>/);
+        if (templateMatch) {
+          content = content.replace(/(<template>)/, `$1\n  <EnableNotifications />`);
+          modified = true;
+        }
+      }
+
+      if (!content.includes('<InstallSection />') && !content.includes('<InstallSection/>')) {
+        const closingTemplateRegex = /<\/template>/;
+        if (closingTemplateRegex.test(content)) {
+          content = content.replace(closingTemplateRegex, `  <InstallSection />\n  <NetworkAlert />\n</template>`);
+          modified = true;
+        }
+      }
+
+      if (modified) {
+        fs.writeFileSync(appFile, content);
+        console.log(`✅ pwa-notifications: Injected components into ${path.relative(initCwd, appFile)}`);
+      }
+      return;
+    }
+  }
+}
+
+/**
  * Generates a fresh VAPID key pair using web-push and appends them to
  * .env.local (or .env if .env.local doesn't exist). Skipped if keys already
  * exist to avoid invalidating existing push subscriptions.
@@ -2390,6 +2477,8 @@ try {
     injectManifestAndComponent(initCwd, hasSrcDir);
   } else if (framework === "react" && bundler === "vite") {
     injectReactVitePWA(initCwd, hasSrcDir, pwaComponentsDir);
+  } else if (framework === "vue" && bundler === "vite") {
+    injectVueVitePWA(initCwd, hasSrcDir, pwaComponentsDir);
   } else {
     console.log(`ℹ️ pwa-notifications: To complete PWA integration, import and add <EnableNotifications /> and <InstallSection /> inside your main layout/view.`);
   }
