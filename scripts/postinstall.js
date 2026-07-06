@@ -1663,8 +1663,104 @@ const handleToggleSubscription = async () => {
 </template>
 `;
 
+// NetworkAlert (Vue)
+const vueNetworkAlertContent = `<script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
+
+const isOnline = ref(true)
+const showAlert = ref(false)
+const justRestored = ref(false)
+let timer: ReturnType<typeof setTimeout> | null = null
+
+const handleOnline = () => {
+  isOnline.value = true
+  showAlert.value = true
+  justRestored.value = true
+  
+  if (timer) clearTimeout(timer)
+  timer = setTimeout(() => {
+    showAlert.value = false
+    justRestored.value = false
+  }, 4000)
+}
+
+const handleOffline = () => {
+  isOnline.value = false
+  showAlert.value = true
+  justRestored.value = false
+}
+
+onMounted(() => {
+  isOnline.value = navigator.onLine
+  if (!navigator.onLine) {
+    showAlert.value = true
+  }
+  window.addEventListener('online', handleOnline)
+  window.addEventListener('offline', handleOffline)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('online', handleOnline)
+  window.removeEventListener('offline', handleOffline)
+  if (timer) clearTimeout(timer)
+})
+</script>
+
+<template>
+  <div v-if="showAlert" style="position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 50; transition: all 0.5s ease-out;">
+    <div 
+      style="display: flex; align-items: flex-start; gap: 0.75rem; border-radius: 0.75rem; padding: 1rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 1px solid; max-width: 24rem; width: 100%; transition: colors 0.3s;"
+      :style="!isOnline 
+        ? { backgroundColor: '#fef2f2', borderColor: '#fecaca', color: '#991b1b' } 
+        : { backgroundColor: '#ecfdf5', borderColor: '#a7f3d0', color: '#065f46' }"
+      role="alert"
+    >
+      <div style="margin-top: 0.125rem; flex-shrink: 0;">
+        <svg v-if="!isOnline" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #ef4444;">
+          <path d="m2 2 20 20"/>
+          <path d="M8.5 16.5a5 5 0 0 1 7 0"/>
+          <path d="M2 8.82a15 15 0 0 1 4.17-2.65"/>
+          <path d="M10.66 5c4.01-.36 8.14.9 11.34 3.82"/>
+        </svg>
+        <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #10b981;">
+          <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
+          <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
+          <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+          <line x1="12" y1="20" x2="12.01" y2="20"/>
+        </svg>
+      </div>
+      
+      <div style="flex: 1;">
+        <h3 style="font-size: 0.875rem; font-weight: bold; margin: 0;">
+          {{ !isOnline ? "You are offline" : "Connection restored" }}
+        </h3>
+        <div style="margin-top: 0.25rem; font-size: 0.875rem; opacity: 0.9; line-height: 1.625;">
+          {{ !isOnline 
+            ? "Please check your internet connection. Some features may not be available." 
+            : "You are back online. All features are fully functional." }}
+        </div>
+      </div>
+
+      <button 
+        v-if="!isOnline"
+        @click="showAlert = false"
+        style="margin-top: 0.125rem; flex-shrink: 0; border-radius: 0.375rem; padding: 0.25rem; opacity: 0.7; transition: opacity 0.2s; border: none; background: transparent; cursor: pointer;"
+        :style="!isOnline ? { color: '#991b1b' } : { color: '#065f46' }"
+        aria-label="Close alert"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</template>
+`;
+
 // InstallSection (Vue)
 const vueInstallSectionContent = `<script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
 import { onPWAInstallable, isPWAInstalled } from 'pwa-notifications/client'
 import PushNotificationManager from './PushNotificationManager.vue'
 import InstallPrompt from './InstallPrompt.vue'
@@ -1717,8 +1813,8 @@ onMounted(() => {
         data.icons.forEach((icon) => {
           if (!icon.src) {
             console.warn(
-              '[pwa-notifications] manifest.json has an icon with an empty or missing "src".\n' +
-              'This will prevent the PWA from being installable on some browsers.\n' +
+              '[pwa-notifications] manifest.json has an icon with an empty or missing "src". ' +
+              'This will prevent the PWA from being installable on some browsers. ' +
               'Icon entry: ' + JSON.stringify(icon)
             )
             return
@@ -1727,13 +1823,13 @@ onMounted(() => {
           fetch(icon.src, { method: 'HEAD' }).then((r) => {
             if (!r.ok) {
               console.warn(
-                '[pwa-notifications] manifest.json icon not found: "' + icon.src + '" (HTTP ' + r.status + ').\n' +
+                '[pwa-notifications] manifest.json icon not found: "' + icon.src + '" (HTTP ' + r.status + '). ' +
                 'Make sure the file exists in your public/ directory.'
               )
             }
           }).catch(() => {
             console.warn(
-              '[pwa-notifications] Could not reach manifest icon: "' + icon.src + '".\n' +
+              '[pwa-notifications] Could not reach manifest icon: "' + icon.src + '". ' +
               'Make sure the file exists in your public/ directory.'
             )
           })
@@ -1742,8 +1838,8 @@ onMounted(() => {
     })
     .catch(() => {
       console.warn(
-        '[pwa-notifications] Could not load /manifest.json.\n' +
-        'Make sure the file exists in your public/ directory.\n' +
+        '[pwa-notifications] Could not load /manifest.json. ' +
+        'Make sure the file exists in your public/ directory. ' +
         'Falling back to default app name and description.'
       )
     })
@@ -2460,18 +2556,21 @@ try {
     pushManager = pushManager.replace(/NEXT_PUBLIC_VAPID_PUBLIC_KEY/g, `${envPrefix}VAPID_PUBLIC_KEY`);
   }
 
+  let networkAlert = isVue ? vueNetworkAlertContent : networkAlertContent;
+
   if (!hasTypeScript) {
     enableNotifications = stripTypeScript(enableNotifications, isVue);
     installPrompt = stripTypeScript(installPrompt, isVue);
     pushManager = stripTypeScript(pushManager, isVue);
     installSection = stripTypeScript(installSection, isVue);
+    networkAlert = stripTypeScript(networkAlert, isVue);
   }
 
   writeIfNotExist(path.join(pwaComponentsDir, 'EnableNotifications' + componentExt), enableNotifications);
   writeIfNotExist(path.join(pwaComponentsDir, 'InstallPrompt' + componentExt), installPrompt);
   writeIfNotExist(path.join(pwaComponentsDir, 'PushNotificationManager' + componentExt), pushManager);
   writeIfNotExist(path.join(pwaComponentsDir, 'InstallSection' + componentExt), installSection);
-  writeIfNotExist(path.join(pwaComponentsDir, 'NetworkAlert' + componentExt), networkAlertContent);
+  writeIfNotExist(path.join(pwaComponentsDir, 'NetworkAlert' + componentExt), networkAlert);
   
   if (framework === "next") {
     injectManifestAndComponent(initCwd, hasSrcDir);
