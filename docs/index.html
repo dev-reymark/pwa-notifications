@@ -367,11 +367,31 @@
               <p class="text-[10px] text-emerald-800 leading-relaxed font-medium"><strong>What happens next?</strong> The library will automatically inject the components into your root layout. You will instantly see the "Install App" section at the bottom of your page, and the standard install icon will appear in the browser's address bar!</p>
             </div>
           </div>
-          <div class="md:col-span-2 relative">
-            <button onclick="copyToClipboard('npm i pwa-notifications', this)" class="absolute right-3 top-3 text-zinc-400 hover:text-zinc-700 transition" title="Copy code">
-              <i data-lucide="copy" class="h-4 w-4"></i>
-            </button>
-            <pre class="bg-zinc-950 text-zinc-50 p-4 rounded-xl text-xs font-mono overflow-x-auto code-scroll">npm i pwa-notifications</pre>
+          <div class="md:col-span-2 relative bg-zinc-950 rounded-xl overflow-hidden shadow-lg shadow-zinc-900/20">
+            <div class="flex items-center gap-1 px-2 pt-2 bg-zinc-900/80 border-b border-zinc-800">
+              <button onclick="switchPackageManager('npm')" id="tab-npm" class="pb-2 px-3 text-xs font-semibold text-zinc-300 border-b-2 border-emerald-500 flex items-center gap-2 transition-colors">
+                <svg viewBox="0 0 24 24" class="h-3 w-3 fill-red-500"><path d="M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474c.977 0 1.763-.786 1.763-1.763V1.763C24 .786 23.214 0 22.237 0zM5.13 5.323l13.837.019-.009 13.836h-3.464l.01-10.382h-3.456L12.04 19.17H5.113z"/></svg>
+                npm
+              </button>
+              <button onclick="switchPackageManager('pnpm')" id="tab-pnpm" class="pb-2 px-3 text-xs font-semibold text-zinc-500 border-b-2 border-transparent hover:text-zinc-300 flex items-center gap-2 transition-colors">
+                <svg viewBox="0 0 24 24" class="h-3 w-3 fill-amber-500"><path d="M0 0v7.5h7.5V0zm8.25 0v7.5h7.5V0zm8.25 0v7.5H24V0zM8.25 8.25v7.5h7.5v-7.5zm8.25 0v7.5H24v-7.5zm-16.5 8.25V24h7.5v-7.5zm8.25 0V24h7.5v-7.5zm8.25 0V24H24v-7.5z"/></svg>
+                pnpm
+              </button>
+              <button onclick="switchPackageManager('yarn')" id="tab-yarn" class="pb-2 px-3 text-xs font-semibold text-zinc-500 border-b-2 border-transparent hover:text-zinc-300 flex items-center gap-2 transition-colors">
+                <svg viewBox="0 0 24 24" class="h-3 w-3 fill-sky-400"><path d="M12.923 10.988l4.475-6.24H24L15.352 16.52v7.194h-5.264V16.52L1.44 4.748h6.294l5.189 6.24z"/></svg>
+                yarn
+              </button>
+              <button onclick="switchPackageManager('bun')" id="tab-bun" class="pb-2 px-3 text-xs font-semibold text-zinc-500 border-b-2 border-transparent hover:text-zinc-300 flex items-center gap-2 transition-colors">
+                <svg viewBox="0 0 24 24" class="h-3 w-3 fill-[#fbf0df]"><path d="M12 0C7.142 0 2.593 1.884.28 5.485c3.214-.236 6.55.842 8.795 3.324l.013.013-1.897-4.148c4.27 1.547 6.42 2.766 8.528 5.25.753.884 1.54 1.942 2.378 3.197.801-.409 1.636-.8 2.502-1.171C18.666 5.26 15.65 0 12 0zM.015 7.15A12.012 12.012 0 0 0 0 12a12.036 12.036 0 0 0 .285 2.595c2.327-.403 4.887-.215 7.078 1.488 1.764 1.365 2.753 3.315 3.498 5.255l.07.18 1.48-5.305c4.195.961 7.148 4.298 9.387 7.065A11.967 11.967 0 0 0 24 12c0-2.316-.665-4.472-1.8-6.302-1.282.684-2.583 1.258-3.9 1.722-.501-.976-1.077-1.854-1.748-2.646C14.73 2.607 12.637 1.286 8.358-.088l1.353 2.96-2.59-1.254A11.984 11.984 0 0 0 .015 7.15zM5.38 22.846C7.306 23.593 9.398 24 11.604 24h.792C18.828 24 24 18.81 24 12.392a11.962 11.962 0 0 0-.106-1.57c-2.457-2.613-5.594-5.694-9.984-6.39l-1.264 4.54a52.545 52.545 0 0 0-4.148-5.268c-1.325-1.583-2.912-2.73-4.886-3.15C2.697 18.067 2.146 22.185 5.38 22.846zm-2.039-6.32a9.664 9.664 0 0 1-1.352 1.638C1.516 19.33.629 20.672 0 22.176c2.518.73 5.35.534 7.643-1.074.453-.318.895-.672 1.32-1.054a8.6 8.6 0 0 1-1.05-1.298c-1.637-2.448-2.682-5.746-4.572-5.224z"/></svg>
+                bun
+              </button>
+            </div>
+            <div class="relative">
+              <button onclick="copyInstallCommand(this)" class="absolute right-3 top-3 text-zinc-400 hover:text-zinc-200 transition" title="Copy code">
+                <i data-lucide="copy" class="h-4 w-4"></i>
+              </button>
+              <pre id="install-command" class="text-zinc-50 p-4 text-xs font-mono overflow-x-auto code-scroll">npm i pwa-notifications</pre>
+            </div>
           </div>
         </div>
 
@@ -653,6 +673,36 @@ export function useNotifications(userId: string) {
 
   <!-- Mockup Interactivity Script -->
   <script>
+    const commands = {
+      npm: "npm i pwa-notifications",
+      pnpm: "pnpm add pwa-notifications",
+      yarn: "yarn add pwa-notifications",
+      bun: "bun add pwa-notifications"
+    };
+    
+    let currentPm = 'npm';
+
+    function switchPackageManager(pm) {
+      currentPm = pm;
+      document.getElementById('install-command').innerText = commands[pm];
+      
+      const tabs = ['npm', 'pnpm', 'yarn', 'bun'];
+      tabs.forEach(t => {
+        const tab = document.getElementById(`tab-${t}`);
+        if (t === pm) {
+          tab.classList.remove('text-zinc-500', 'border-transparent');
+          tab.classList.add('text-zinc-300', 'border-emerald-500');
+        } else {
+          tab.classList.remove('text-zinc-300', 'border-emerald-500');
+          tab.classList.add('text-zinc-500', 'border-transparent');
+        }
+      });
+    }
+
+    function copyInstallCommand(button) {
+      copyToClipboard(commands[currentPm], button);
+    }
+
     // Initialize Lucide Icons
     lucide.createIcons();
 
